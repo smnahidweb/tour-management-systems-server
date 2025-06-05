@@ -62,15 +62,20 @@ app.get('/allPackages/:id',async(req,res)=>{
 
 
 // post for Booing Data
-app.post('/booking',async(req,res)=>{
+app.post('/bookings',async(req,res)=>{
   const allBooking = req.body;
   const result = await BookingCollection.insertOne(allBooking)
   res.send(result)
-  
+
 })
 
 
-
+// get a specific booking data filtered by email
+app.get('/bookings', async (req, res) => {
+  const email = req.query.email;
+  const result = await BookingCollection.find({ buyerEmail: email }).toArray();
+  res.send(result);
+});
 
 
 
