@@ -14,7 +14,7 @@ app.use(express.json())
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.voaefs5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -32,6 +32,53 @@ async function run() {
     await client.connect();
     const database = client.db("tour-packages");
     const PackagesCollection = database.collection("packages");
+    const BookingCollection = database.collection('booking')
+
+
+// post packages
+app.post('/allPackages',async(req,res)=>{
+  const allPlants = req.body;
+  const result = await PackagesCollection.insertOne(allPlants)
+  res.send(result)
+
+})
+
+app.get('/allPackages',async(req,res)=>{
+  const result = await PackagesCollection.find().toArray()
+  res.send(result)
+})
+
+
+// get a specific package
+app.get('/allPackages/:id',async(req,res)=>{
+
+  const id = req.params.id;
+  const quary = {_id: new ObjectId(id)}
+  const result = await PackagesCollection.findOne(quary)
+  res.send(result)
+
+
+})
+
+
+// post for Booing Data
+app.post('/booking',async(req,res)=>{
+  const allBooking = req.body;
+  const result = await BookingCollection.insertOne(allBooking)
+  res.send(result)
+  
+})
+
+
+
+
+
+
+
+
+
+
+
    
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
