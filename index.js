@@ -60,6 +60,46 @@ app.get('/allPackages/:id',async(req,res)=>{
 
 })
 
+// Update a packages 
+app.put('/allPackages/:id',async(req,res)=>{
+  const id = req.params.id;
+  const quary = {_id: new ObjectId(id)}
+  const {
+     tourName,
+    imageUrl,
+    duration,
+    price,
+    departureLocation,
+    destination,
+    departureDate,
+    contactNo,
+    guideName,
+    guidePhoto,
+    guideEmail,
+    packageDetails
+  } = req.body
+
+  const updatedDoc ={
+    $set:{
+    tourName,
+    imageUrl,
+    duration,
+    price,
+    departureLocation,
+    destination,
+    departureDate,
+    contactNo,
+    guideName,
+    guidePhoto,
+    guideEmail,
+    packageDetails
+    }
+
+  }
+  const result = await PackagesCollection.updateOne(quary,updatedDoc)
+  res.send(result)
+})
+
 
 // post for Booing Data
 app.post('/bookings',async(req,res)=>{
