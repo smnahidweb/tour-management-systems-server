@@ -100,6 +100,19 @@ app.put('/allPackages/:id',async(req,res)=>{
   res.send(result)
 })
 
+// delete 
+app.delete('/allPackages/:id',async(req,res)=>{
+
+  const id = req.params.id;
+  const quary = {_id: new ObjectId(id)}
+  const result = await PackagesCollection.deleteOne(quary)
+  res.send(result)
+   
+
+
+
+})
+
 
 // post for Booing Data
 app.post('/bookings',async(req,res)=>{
