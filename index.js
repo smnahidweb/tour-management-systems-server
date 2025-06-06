@@ -69,13 +69,44 @@ app.post('/bookings',async(req,res)=>{
 
 })
 
+app.get('/bookings',async(req,res)=>{
+  const result = await BookingCollection.find().toArray()
+  res.send(result)
+})
 
 // get a specific booking data filtered by email
-app.get('/bookings', async (req, res) => {
+app.get('/myBookings', async (req, res) => {
   const email = req.query.email;
-  const result = await BookingCollection.find({ buyerEmail: email }).toArray();
+
+  const query = {
+    buyerEmail: email
+  };
+  
+  const result = await BookingCollection.find(query).toArray();
+
+ 
+ 
+  for(const booking of result){
+   
+    const tourId = booking.tourId
+    const PackageId = { _id: new ObjectId(tourId)}
+    const packageData = await PackagesCollection.findOne(PackageId);
+
+   
+      booking.departureLocation = packageData.departureLocation;
+      booking.departureDate = packageData.departureDate;
+      booking.contactNo = packageData.contactNo;
+      booking.guideName = packageData.guideName;
+      booking.destination = packageData.destination;
+    
+  }
+
   res.send(result);
+  console.log(result)
 });
+
+
+
 
 
 
