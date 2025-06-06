@@ -146,11 +146,16 @@ app.get('/myBookings', async (req, res) => {
     const packageData = await PackagesCollection.findOne(PackageId);
 
    
-      booking.departureLocation = packageData.departureLocation;
+      
+    if(packageData){
+         booking.departureLocation = packageData.departureLocation;
       booking.departureDate = packageData.departureDate;
       booking.contactNo = packageData.contactNo;
       booking.guideName = packageData.guideName;
       booking.destination = packageData.destination;
+    }
+      
+     
     
   }
 
