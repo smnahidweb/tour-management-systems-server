@@ -65,6 +65,7 @@ app.get('/myPackages',async(req,res)=>{
   const email = req.query.email;
   const query = { guideEmail: email }
   const result = await PackagesCollection.find(query).toArray();
+ 
   res.send(result)
 
 })
@@ -130,6 +131,18 @@ app.post('/bookings',async(req,res)=>{
   const result = await BookingCollection.insertOne(allBooking)
   res.send(result)
 
+})
+app.patch('/allPackages/:id/increment',async(req,res)=>{
+  const id = req.params.id;
+  const result = await PackagesCollection.updateOne(
+    {_id: new ObjectId(id)},
+    {
+      $inc:{
+        bookingCount:1
+      }
+    }
+  )
+  res.send(result)
 })
 
 app.get('/bookings',async(req,res)=>{
