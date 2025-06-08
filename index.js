@@ -60,6 +60,15 @@ app.get('/allPackages/:id',async(req,res)=>{
 
 })
 
+// get a specific packages based on email
+app.get('/myPackages',async(req,res)=>{
+  const email = req.query.email;
+  const query = { guideEmail: email }
+  const result = await PackagesCollection.find(query).toArray();
+  res.send(result)
+
+})
+
 // Update a packages 
 app.put('/allPackages/:id',async(req,res)=>{
   const id = req.params.id;
@@ -100,6 +109,7 @@ app.put('/allPackages/:id',async(req,res)=>{
   res.send(result)
 })
 
+
 // delete 
 app.delete('/allPackages/:id',async(req,res)=>{
 
@@ -125,6 +135,13 @@ app.post('/bookings',async(req,res)=>{
 app.get('/bookings',async(req,res)=>{
   const result = await BookingCollection.find().toArray()
   res.send(result)
+})
+app.get('/bookings/:id',async(req,res)=>{
+  const id = req.params.id;
+  const quary = {_id: new ObjectId(id)}
+  const result = await BookingCollection.findOne(quary)
+  res.send(result)
+
 })
 
 // get a specific booking data filtered by email
@@ -163,7 +180,19 @@ app.get('/myBookings', async (req, res) => {
   console.log(result)
 });
 
+app.patch('/bookings/:id',async(req,res)=>{
+const id = req.params.id
+const filter = {_id: new ObjectId(id)}
+const {status} = req.body;
+const UpdatedStatus ={
+  $set:{
+    status : status
+  }
+}
+const result = await BookingCollection.updateOne(filter,UpdatedStatus)
+res.send(result)
 
+})
 
 
 
