@@ -33,6 +33,7 @@ async function run() {
     const database = client.db("tour-packages");
     const PackagesCollection = database.collection("packages");
     const BookingCollection = database.collection('booking')
+    const ReviewsCollection = database.collection('reviews');
 
 
 // post packages
@@ -41,6 +42,16 @@ app.post('/allPackages',async(req,res)=>{
   const result = await PackagesCollection.insertOne(allPlants)
   res.send(result)
 
+})
+// post reviews
+app.post('/reviews',async(req,res)=>{
+  const allReviews = req.body;
+  const result = await ReviewsCollection.insertOne(allReviews)
+  res.send(result)
+})
+app.get('/reviews',async(req,res)=>{
+  const result = await ReviewsCollection.find().toArray()
+  res.send(result)
 })
 
 app.get('/allPackages',async(req,res)=>{
