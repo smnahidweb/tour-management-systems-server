@@ -25,6 +25,36 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./firebase-admin.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+// jwt middlewear
+const firebaseToken = async(req,res,next)=>{
+  const authHeaders = req.headers.authorization;
+ 
+  if(!authHeaders || !authHeaders.startsWith('Bearer ')){
+   return res.status(401).send({message: 'UnAuthorization access' })
+  }
+  const token = authHeaders.split(' ')[1]
+  console.log('Token in the middlewar',token)
+
+  try{
+ const decoded = await admin.auth().verifyIdToken(token)
+ console.log('Decoded data',decoded)
+ req.decoded = decoded;
+   next()
+  }
+  catch(error){
+    return res.status(401).send({message: 'UnAuthorization access' })
+  }
+
+
+}
 
 async function run() {
   try {
@@ -37,7 +67,7 @@ async function run() {
 
 
 // post packages
-app.post('/allPackages',async(req,res)=>{
+app.post('/allPackages', firebaseToken, async(req,res)=>{
   const allPlants = req.body;
   const result = await PackagesCollection.insertOne(allPlants)
   res.send(result)
@@ -72,8 +102,11 @@ app.get('/allPackages/:id',async(req,res)=>{
 })
 
 // get a specific packages based on email
-app.get('/myPackages',async(req,res)=>{
+app.get('/myPackages', firebaseToken, async(req,res)=>{
   const email = req.query.email;
+  if(email !== req.decoded.email){
+    return res.status(403).send({message:'Forbidden Access'})
+  }
   const query = { guideEmail: email }
   const result = await PackagesCollection.find(query).toArray();
  
@@ -143,6 +176,11 @@ app.post('/bookings',async(req,res)=>{
   res.send(result)
 
 })
+app.get('/bookingsCount', async (req, res) => {
+  const count = await BookingCollection.estimatedDocumentCount();
+  res.send({ total: count });
+});
+
 app.patch('/allPackages/:id/increment',async(req,res)=>{
   const id = req.params.id;
   const result = await PackagesCollection.updateOne(
@@ -169,8 +207,12 @@ app.get('/bookings/:id',async(req,res)=>{
 })
 
 // get a specific booking data filtered by email
-app.get('/myBookings', async (req, res) => {
+app.get('/myBookings', firebaseToken, async (req, res) => {
   const email = req.query.email;
+  
+  if(email !== req.decoded.email){
+    return res.status(403).send({message: 'Forbidden Access'})
+  }
 
   const query = {
     buyerEmail: email
@@ -189,7 +231,7 @@ app.get('/myBookings', async (req, res) => {
    
       
     if(packageData){
-         booking.departureLocation = packageData.departureLocation;
+      booking.departureLocation = packageData.departureLocation;
       booking.departureDate = packageData.departureDate;
       booking.contactNo = packageData.contactNo;
       booking.guideName = packageData.guideName;
@@ -201,7 +243,7 @@ app.get('/myBookings', async (req, res) => {
   }
 
   res.send(result);
-  console.log(result)
+  
 });
 
 app.patch('/bookings/:id',async(req,res)=>{
