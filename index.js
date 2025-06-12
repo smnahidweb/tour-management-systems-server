@@ -59,7 +59,7 @@ const firebaseToken = async(req,res,next)=>{
 async function run() {
   try {
     
-    await client.connect();
+    
     const database = client.db("tour-packages");
     const PackagesCollection = database.collection("packages");
     const BookingCollection = database.collection('booking')
@@ -69,6 +69,11 @@ async function run() {
 // post packages
 app.post('/allPackages', firebaseToken, async(req,res)=>{
   const allPlants = req.body;
+  
+//   console.log(req.body.guideEmail)
+//  if (req.decoded.email !== req.body.guideEmail) {
+//   return res.status(403).send({ message: 'Forbidden access' });
+// }
   const result = await PackagesCollection.insertOne(allPlants)
   res.send(result)
 
@@ -115,7 +120,7 @@ app.get('/myPackages', firebaseToken, async(req,res)=>{
 })
 
 // Update a packages 
-app.put('/allPackages/:id',async(req,res)=>{
+app.put('/allPackages/:id', firebaseToken, async(req,res)=>{
   const id = req.params.id;
   const quary = {_id: new ObjectId(id)}
   const {
@@ -156,15 +161,12 @@ app.put('/allPackages/:id',async(req,res)=>{
 
 
 // delete 
-app.delete('/allPackages/:id',async(req,res)=>{
+app.delete('/allPackages/:id', firebaseToken, async(req,res)=>{
 
   const id = req.params.id;
   const quary = {_id: new ObjectId(id)}
   const result = await PackagesCollection.deleteOne(quary)
   res.send(result)
-   
-
-
 
 })
 
@@ -194,7 +196,7 @@ app.patch('/allPackages/:id/increment',async(req,res)=>{
   res.send(result)
 })
 
-app.get('/bookings',async(req,res)=>{
+app.get('/bookings',  async(req,res)=>{
   const result = await BookingCollection.find().toArray()
   res.send(result)
 })
@@ -269,8 +271,8 @@ res.send(result)
 
 
    
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+   
+   
   } finally {
    
    
