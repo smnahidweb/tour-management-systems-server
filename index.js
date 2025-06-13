@@ -94,6 +94,12 @@ app.get('/allPackages',async(req,res)=>{
   res.send(result)
 })
 
+// sort by price
+app.get('/tour-short',async(req,res)=>{
+  const result = await PackagesCollection.find({ duration: { $regex: /^([1-2])\s?Days?/i } }).sort().toArray()
+      
+  res.send(result)
+})
 
 // get a specific package
 app.get('/allPackages/:id',async(req,res)=>{
