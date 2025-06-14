@@ -79,7 +79,7 @@ app.post('/allPackages', firebaseToken, async(req,res)=>{
 
 })
 // post reviews
-app.post('/reviews',async(req,res)=>{
+app.post('/reviews', firebaseToken, async(req,res)=>{
   const allReviews = req.body;
   const result = await ReviewsCollection.insertOne(allReviews)
   res.send(result)
@@ -115,7 +115,7 @@ app.get('/mid-tour', async (req, res) => {
 
 
 // get a specific package
-app.get('/allPackages/:id',async(req,res)=>{
+app.get('/allPackages/:id', firebaseToken, async(req,res)=>{
 
   const id = req.params.id;
   const quary = {_id: new ObjectId(id)}
@@ -191,7 +191,7 @@ app.delete('/allPackages/:id', firebaseToken, async(req,res)=>{
 
 
 // post for Booing Data
-app.post('/bookings',async(req,res)=>{
+app.post('/bookings',  firebaseToken, async(req,res)=>{
   const allBooking = req.body;
   const result = await BookingCollection.insertOne(allBooking)
   res.send(result)
@@ -202,7 +202,7 @@ app.get('/bookingsCount', async (req, res) => {
   res.send({ total: count });
 });
 
-app.patch('/allPackages/:id/increment',async(req,res)=>{
+app.patch('/allPackages/:id/increment', firebaseToken, async(req,res)=>{
   const id = req.params.id;
   const result = await PackagesCollection.updateOne(
     {_id: new ObjectId(id)},
@@ -215,11 +215,11 @@ app.patch('/allPackages/:id/increment',async(req,res)=>{
   res.send(result)
 })
 
-app.get('/bookings',  async(req,res)=>{
+app.get('/bookings', firebaseToken,  async(req,res)=>{
   const result = await BookingCollection.find().toArray()
   res.send(result)
 })
-app.get('/bookings/:id',async(req,res)=>{
+app.get('/bookings/:id', firebaseToken, async(req,res)=>{
   const id = req.params.id;
   const quary = {_id: new ObjectId(id)}
   const result = await BookingCollection.findOne(quary)
@@ -267,7 +267,7 @@ app.get('/myBookings', firebaseToken, async (req, res) => {
   
 });
 
-app.patch('/bookings/:id',async(req,res)=>{
+app.patch('/bookings/:id', firebaseToken, async(req,res)=>{
 const id = req.params.id
 const filter = {_id: new ObjectId(id)}
 const {status} = req.body;
