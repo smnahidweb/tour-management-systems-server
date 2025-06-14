@@ -70,10 +70,7 @@ async function run() {
 app.post('/allPackages', firebaseToken, async(req,res)=>{
   const allPlants = req.body;
   
-//   console.log(req.body.guideEmail)
-//  if (req.decoded.email !== req.body.guideEmail) {
-//   return res.status(403).send({ message: 'Forbidden access' });
-// }
+
   const result = await PackagesCollection.insertOne(allPlants)
   res.send(result)
 

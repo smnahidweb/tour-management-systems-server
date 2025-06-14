@@ -1,9 +1,7 @@
 
----
 
-###  `server/README.md`
 
-```markdown
+
 # TourNest - Server (Backend)
 
 This is the backend of the **TourNest Travel Booking System**, built with Express.js and MongoDB. It powers the API, handles authentication and authorization, and manages bookings, tours, and reviews.
