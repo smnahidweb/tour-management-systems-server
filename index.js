@@ -224,6 +224,21 @@ app.get('/bookings/:id', firebaseToken, async(req,res)=>{
 
 })
 
+// GET /popularTours
+app.get('/popularTours', async (req, res) => {
+  try {
+    const result = await PackagesCollection.find()
+      .sort({ bookingCount: -1 }) // descending
+      .limit(10)
+      .toArray();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to fetch popular tours" });
+  }
+});
+
+
+
 // get a specific booking data filtered by email
 app.get('/myBookings', firebaseToken, async (req, res) => {
   const email = req.query.email;
