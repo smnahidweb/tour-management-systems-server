@@ -86,10 +86,27 @@ app.get('/reviews',async(req,res)=>{
   res.send(result)
 })
 
-app.get('/allPackages',async(req,res)=>{
-  const result = await PackagesCollection.find().toArray()
-  res.send(result)
-})
+app.get('/allPackages', async (req, res) => {
+  try {
+    const { sort } = req.query;
+     console.log('Incoming sort:', sort);
+    // Define sort option
+    let sortOption = {};
+    if (sort === 'asc') {
+      sortOption = { price: 1 };
+    } else if (sort === 'desc') {
+      sortOption = { price: -1 };
+    }
+
+    // Apply sorting in MongoDB query
+    const result = await PackagesCollection.find().sort(sortOption).toArray();
+    res.send(result);
+  } catch (error) {
+    console.error("Failed to fetch packages:", error);
+    res.status(500).send({ error: "Failed to load packages" });
+  }
+});
+
 
 
 app.get('/tour-short', async (req, res) => {
